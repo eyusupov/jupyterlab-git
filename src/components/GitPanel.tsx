@@ -756,20 +756,18 @@ export class GitPanel extends React.Component<IGitPanelProps, IGitPanelState> {
           }
 
           const { name, email } = result.value;
-          if (
-            keys.indexOf('user.name') < 0 ||
-            keys.indexOf('user.email') < 0
-          ) {
-            await this.props.model.config({
-              'user.name': name,
-              'user.email': email
-            });
-          }
+          // update the config file even if the author is already set so that on the next prompt
+          // the last author will be used by default
+          await this.props.model.config({
+            'user.name': name,
+            'user.email': email
+          });
 
           if (this.props.settings.composite['promptUserIdentity']) {
+            // also explicitly pass author to commit command to avoid potential race condition
+            // when multiple authors commit at the same time
             authorOverride = `${name} <${email}>`;
           }
-
         }
         this._previousRepoPath = path;
         return authorOverride;

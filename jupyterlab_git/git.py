@@ -198,7 +198,7 @@ class Git:
         if len(kwargs):
             output = []
             for k, v in kwargs.items():
-                cmd = ["git", "config", "--add", k, v]
+                cmd = ["git", "config", k, v]
                 code, out, err = await execute(cmd, cwd=path)
                 output.append(out.strip())
                 response["code"] = code
